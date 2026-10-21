@@ -1,0 +1,37 @@
+name: Publish
+
+# Push a tag v<version> (matching package.json) to publish. Uses npm trusted publishing (OIDC):
+# no npm token exists in this repo, and every version carries a provenance attestation that links it
+# to this workflow run and commit.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Add required reviewers to this environment (Settings → Environments → npm) so a tag alone cannot publish.
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # OIDC token for trusted publishing + provenance
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      # No registry-url on purpose: it writes an .npmrc token placeholder that breaks trusted publishing.
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Tag matches package.json version
+        run: |
+          expected="v$(node -p "require('./package.json').version")"
+          if [ "$expected" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json version ($expected)"; exit 1
+          fi
+      - run: npm ci
+      # prepublishOnly runs lint, tests and the build before anything is uploaded.
+      - run: npm publish

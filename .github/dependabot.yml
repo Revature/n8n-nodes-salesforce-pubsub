@@ -1,0 +1,15 @@
+version: 2
+updates:
+  # The Pub/Sub client and its dependencies are bundled into the published node, so their security
+  # fixes reach users only through a new release of this package.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dev-tooling:
+        patterns: ['@n8n/*', 'eslint', 'prettier', 'typescript', 'esbuild']
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly

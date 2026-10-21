@@ -1,0 +1,13 @@
+{
+	"node": "@revature/n8n-nodes-salesforce-pubsub.salesforcePubSubTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Sales", "Development"],
+	"resources": {
+		"primaryDocumentation": [
+			{
+				"url": "https://developer.salesforce.com/docs/platform/pub-sub-api/overview"
+			}
+		]
+	}
+}

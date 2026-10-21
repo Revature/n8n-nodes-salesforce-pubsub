@@ -1,0 +1,65 @@
+{
+	"name": "@revature/n8n-nodes-salesforce-pubsub",
+	"version": "0.1.0",
+	"description": "n8n trigger node that subscribes to Salesforce platform events over the Pub/Sub API",
+	"license": "MIT",
+	"author": {
+		"name": "Revature"
+	},
+	"homepage": "https://github.com/Revature/n8n-nodes-salesforce-pubsub#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Revature/n8n-nodes-salesforce-pubsub.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Revature/n8n-nodes-salesforce-pubsub/issues"
+	},
+	"keywords": [
+		"n8n-community-node-package",
+		"salesforce",
+		"pubsub",
+		"platform-events"
+	],
+	"engines": {
+		"node": ">=20"
+	},
+	"scripts": {
+		"build": "n8n-node build && node scripts/bundle.mjs",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "node --test test/flow.test.ts",
+		"prepublishOnly": "npm run lint && npm test && npm run build"
+	},
+	"files": [
+		"dist",
+		"!dist/tsconfig.tsbuildinfo",
+		"!dist/**/*.map"
+	],
+	"publishConfig": {
+		"access": "public",
+		"provenance": true
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": false,
+		"credentials": [
+			"dist/credentials/SalesforcePubSubApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/SalesforcePubSubTrigger/SalesforcePubSubTrigger.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "0.53.3",
+		"esbuild": "0.28.2",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"salesforce-pubsub-api-client": "5.6.1",
+		"typescript": "5.9.3",
+		"underscore": "1.13.8"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}
