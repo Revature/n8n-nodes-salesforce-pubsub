@@ -94,11 +94,17 @@ are in `dist/THIRD_PARTY_LICENSES.txt`.
 
 ## Releasing
 
-1. Bump `version` in `package.json` (via a pull request).
-2. Tag the merge commit `v<version>` and push the tag. The *Publish* workflow tests, builds and publishes
-   to npm with [trusted publishing](https://docs.npmjs.com/trusted-publishers) and provenance — no npm
-   token is stored anywhere.
-3. Update the pinned `version` and `checksum` wherever the node is installed.
+Merging a version bump is the release; there is nothing to tag by hand.
+
+1. In a pull request, bump the version (`npm version patch --no-git-tag-version`, or `minor`/`major`).
+2. Merge it. The *Publish* workflow sees that this version is not on npm yet and waits for approval on
+   the `npm` environment (*Actions → Publish → Review deployments*).
+3. Once approved, it tests, builds and publishes with [trusted publishing](https://docs.npmjs.com/trusted-publishers)
+   and provenance (no npm token is stored anywhere), then creates the `v<version>` tag and GitHub release.
+4. Update the pinned `version` and `checksum` wherever the node is installed.
+
+Merges that don't change the version are left alone. If the publish or release step fails, fix the cause
+and re-run it from *Actions → Publish → Run workflow*.
 
 ## License
 
