@@ -1,19 +1,55 @@
 name: Publish
 
-# Push a tag v<version> (matching package.json) to publish. Uses npm trusted publishing (OIDC):
-# no npm token exists in this repo, and every version carries a provenance attestation that links it
-# to this workflow run and commit.
+# Release on merge: every push to main checks whether the package.json version is already on npm.
+# A new version is published (after approval on the `npm` environment) with trusted publishing (OIDC),
+# so no npm token exists in this repo and every version carries a provenance attestation linking it
+# to this workflow run and commit. The git tag and GitHub release are created afterwards, as a record.
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+  workflow_dispatch: # re-run a release whose publish or release step failed
 
 permissions:
   contents: read
 
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
 jobs:
-  publish:
+  check:
     runs-on: ubuntu-latest
-    # Add required reviewers to this environment (Settings → Environments → npm) so a tag alone cannot publish.
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      publish: ${{ steps.version.outputs.publish }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Is this version already on npm?
+        id: version
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          # Empty for an unpublished version of an existing package; "E404" for a new package.
+          published=$(npm view "$name@$version" version 2>/dev/null || true)
+          if [ "$published" = "$version" ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "$name@$version is already on npm; nothing to release."
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "$name@$version is not on npm yet; publishing after approval."
+          fi
+
+  publish:
+    needs: check
+    if: needs.check.outputs.publish == 'true'
+    runs-on: ubuntu-latest
+    # Required reviewers on this environment (Settings → Environments → npm) approve every release.
     environment: npm
     permissions:
       contents: read
@@ -26,12 +62,24 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: 24
-      - name: Tag matches package.json version
-        run: |
-          expected="v$(node -p "require('./package.json').version")"
-          if [ "$expected" != "$GITHUB_REF_NAME" ]; then
-            echo "Tag $GITHUB_REF_NAME does not match package.json version ($expected)"; exit 1
-          fi
       - run: npm ci
       # prepublishOnly runs lint, tests and the build before anything is uploaded.
       - run: npm publish
+
+  release:
+    needs: [check, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create the tag and GitHub release
+    steps:
+      - name: Tag and GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: v${{ needs.check.outputs.version }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists."
+          else
+            gh release create "$TAG" --target "$GITHUB_SHA" --title "$TAG" --generate-notes
+          fi
