@@ -57,6 +57,18 @@ writeFileSync(
 	'dist/THIRD_PARTY_LICENSES.txt',
 	`Third-party software bundled into dist/nodes/SalesforcePubSubTrigger/SalesforcePubSubTrigger.node.js\n\n${sections.join('\n')}`,
 );
+// Exactly what ships, for scripts/check-bundle-vulns.mjs. Not published (gitignored, outside dist/).
+writeFileSync(
+	'.bundle-packages.json',
+	JSON.stringify(
+		[...packages.values()].map((dir) => {
+			const { name, version } = JSON.parse(readFileSync(path.join(dir, 'package.json'), 'utf8'));
+			return { name, version };
+		}),
+		null,
+		2,
+	),
+);
 
 if (!existsSync(outfile)) throw new Error('bundle was not written');
 console.log(`bundled ${packages.size} packages into ${outfile}; copied ${assets.join(', ')}`);

@@ -92,6 +92,21 @@ The build bundles [`salesforce-pubsub-api-client`](https://github.com/pozil/pub-
 its dependencies into the node file, so the published package has no runtime dependencies. Their licences
 are in `dist/THIRD_PARTY_LICENSES.txt`.
 
+## Supply-chain security
+
+A community node runs inside n8n with access to everything n8n can reach, so this repo guards both what
+ships and how it is published:
+
+- **No runtime dependencies.** Libraries are bundled at build time; installing the package fetches nothing else.
+- **Vulnerability gate.** CI fails if any bundled package has a known vulnerability (`npm run check:supply-chain`,
+  OSV database) or any dependency fails npm's registry-signature check.
+- **Dependency review.** A pull request that adds or upgrades to a dependency with a high/critical
+  vulnerability is blocked, development dependencies included (they are what gets bundled).
+- **No install scripts.** CI installs with `npm ci --ignore-scripts`.
+- **Build and publish are separate jobs.** The job that can publish to npm installs nothing and runs no
+  package code; it uploads the tarball the build job produced, with provenance.
+- Actions are pinned to commit SHAs, and Dependabot proposes updates weekly.
+
 ## Releasing
 
 Merging a version bump is the release; there is nothing to tag by hand.

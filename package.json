@@ -29,7 +29,8 @@
 		"lint": "n8n-node lint",
 		"lint:fix": "n8n-node lint --fix",
 		"test": "node --test test/flow.test.ts",
-		"prepublishOnly": "npm run lint && npm test && npm run build"
+		"prepublishOnly": "npm run lint && npm test && npm run build",
+		"check:supply-chain": "node scripts/check-bundle-vulns.mjs && npm audit signatures"
 	},
 	"files": [
 		"dist",

@@ -19,9 +19,12 @@ jobs:
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
+      # --ignore-scripts: no dependency gets to run code at install time.
+      - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      # Fails on a known vulnerability in any bundled package, or a dependency with a bad registry signature.
+      - run: npm run check:supply-chain
       - name: Package contents
         run: npm pack --dry-run
