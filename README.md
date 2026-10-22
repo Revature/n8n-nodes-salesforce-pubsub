@@ -1,4 +1,4 @@
-# @revature/n8n-nodes-salesforce-pubsub
+# @revaturepak/n8n-nodes-salesforce-pubsub
 
 An [n8n](https://n8n.io) trigger node that subscribes to a **Salesforce platform event** over the
 [Pub/Sub API](https://developer.salesforce.com/docs/platform/pub-sub-api/overview) and starts the
@@ -12,16 +12,16 @@ such as Workato do — with no Apex trigger or other change needed in Salesforce
 
 Self-hosted n8n only (it is not an n8n Cloud verified node).
 
-- **UI:** *Settings → Community nodes → Install*, package `@revature/n8n-nodes-salesforce-pubsub`.
+- **UI:** *Settings → Community nodes → Install*, package `@revaturepak/n8n-nodes-salesforce-pubsub`.
 - **Configuration (n8n ≥ 2.21), recommended:** pin the version and its checksum so only that exact build
   can be installed:
 
   ```bash
   N8N_COMMUNITY_PACKAGES_MANAGED_BY_ENV=true
-  N8N_COMMUNITY_PACKAGES='[{"name":"@revature/n8n-nodes-salesforce-pubsub","version":"0.1.0","checksum":"sha512-..."}]'
+  N8N_COMMUNITY_PACKAGES='[{"name":"@revaturepak/n8n-nodes-salesforce-pubsub","version":"0.1.0","checksum":"sha512-..."}]'
   ```
 
-  The checksum is the `dist.integrity` value: `npm view @revature/n8n-nodes-salesforce-pubsub@0.1.0 dist.integrity`.
+  The checksum is the `dist.integrity` value: `npm view @revaturepak/n8n-nodes-salesforce-pubsub@0.1.0 dist.integrity`.
   Read n8n's [environment-variable installation](https://docs.n8n.io/integrations/community-nodes/installation-and-management/environment-variable-installation)
   page first: the first start with this setting uninstalls community packages that are not listed.
 

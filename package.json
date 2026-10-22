@@ -1,5 +1,5 @@
 {
-	"name": "@revature/n8n-nodes-salesforce-pubsub",
+	"name": "@revaturepak/n8n-nodes-salesforce-pubsub",
 	"version": "0.1.0",
 	"description": "n8n trigger node that subscribes to Salesforce platform events over the Pub/Sub API",
 	"license": "MIT",
