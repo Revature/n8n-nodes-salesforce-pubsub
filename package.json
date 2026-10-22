@@ -1,6 +1,6 @@
 {
 	"name": "@revaturepak/n8n-nodes-salesforce-pubsub",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n trigger node that subscribes to Salesforce platform events over the Pub/Sub API",
 	"license": "MIT",
 	"author": {
@@ -55,9 +55,8 @@
 		"esbuild": "0.28.2",
 		"eslint": "9.39.4",
 		"prettier": "3.8.3",
-		"salesforce-pubsub-api-client": "5.6.1",
-		"typescript": "5.9.3",
-		"underscore": "1.13.8"
+		"salesforce-pubsub-api-client": "5.6.2",
+		"typescript": "5.9.3"
 	},
 	"peerDependencies": {
 		"n8n-workflow": "*"
