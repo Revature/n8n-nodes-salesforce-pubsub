@@ -43,7 +43,7 @@ The Salesforce user needs **Read** access to every platform event it subscribes 
 | Parameter | Default | |
 |---|---|---|
 | **Event** | — | `Order_Event__e`, or a full channel path such as `/event/Order_Event__e`. Names ending in `ChangeEvent` map to `/data/…` (Change Data Capture) |
-| **Start From** | Latest | *Latest* · *Earliest Retained* (Salesforce keeps events 72 h) · *After a Replay ID*. Used only the first time; afterwards the trigger resumes where it left off |
+| **Start From** | Latest | *Latest* · *Earliest Retained* (Salesforce keeps events 72 h) · *After a Replay ID*. Used only the first time; afterwards the trigger resumes where it left off. With *Latest*, events published while the subscription is still being set up (the first few seconds after activation) are not delivered |
 | **Batch Size** | 100 | Events requested at a time (1–100). The next batch is requested only after this one is processed |
 
 Each event produces one workflow run with a single item:
